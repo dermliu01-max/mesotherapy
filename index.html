@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>中胚層注射配方計算機</title>
+<title>中胚層注射 臨床工具組</title>
 <style>
   :root{
     --ink:#12151a; --muted:#6b7280; --line:#e2e6ea; --bg:#fff; --panel:#f6f8f9;
@@ -23,78 +23,128 @@
     body{background:#0f1216 !important;}
     .wrap{box-shadow:none !important;}
     input,select{background:var(--panel) !important;color:var(--ink) !important;}
+    .mx .self{background:#2a3037 !important;}
   }
   *{box-sizing:border-box;}
-  body{
-    margin:0;background:#eceff1;color:var(--ink);
-    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
-    font-size:15px;line-height:1.55;
-  }
-  .wrap{max-width:1000px;margin:22px auto;background:var(--bg);padding:30px 34px 38px;
+  body{margin:0;background:#eceff1;color:var(--ink);
+    font-family:"Noto Sans TC","PingFang TC","Microsoft JhengHei","Hiragino Sans TC",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;
+    font-size:15px;line-height:1.55;}
+  .wrap{max-width:1020px;margin:22px auto;background:var(--bg);padding:28px 34px 38px;
     box-shadow:0 1px 3px rgba(0,0,0,.08),0 8px 24px rgba(0,0,0,.06);border-radius:5px;}
-  header{border-bottom:2px solid var(--ink);padding-bottom:12px;margin-bottom:20px;
-    display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;}
+  header{display:flex;justify-content:space-between;align-items:flex-end;gap:16px;flex-wrap:wrap;
+    padding-bottom:12px;}
   h1{font-size:20px;margin:0 0 3px;font-weight:700;letter-spacing:.02em;}
   .sub{font-size:12.5px;color:var(--muted);margin:0;}
-  h2{font-size:14px;margin:26px 0 10px;padding-left:9px;border-left:4px solid var(--accent);letter-spacing:.04em;}
-  .bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
-  button{font-family:inherit;font-size:13px;padding:6px 13px;border-radius:4px;border:1px solid var(--line);
+  /* tabs */
+  .tabnav{display:flex;gap:2px;border-bottom:2px solid var(--ink);margin-bottom:22px;flex-wrap:wrap;}
+  .tabnav button{font-family:inherit;font-size:13px;padding:8px 15px;border:1px solid var(--line);
+    border-bottom:none;background:var(--panel);color:var(--muted);cursor:pointer;
+    border-radius:4px 4px 0 0;margin-bottom:-1px;transition:.12s;}
+  .tabnav button:hover{color:var(--accent);}
+  .tabnav button.on{background:var(--ink);color:var(--bg);border-color:var(--ink);font-weight:600;}
+  .panel{display:none;}
+  .panel.on{display:block;}
+  .ptitle{display:none;}
+  h2{font-size:14px;margin:28px 0 10px;padding-left:9px;border-left:4px solid var(--accent);letter-spacing:.04em;}
+  h2:first-child{margin-top:0;}
+  h3{font-size:13px;margin:20px 0 8px;color:var(--accent);letter-spacing:.02em;}
+  .bar{display:flex;gap:7px;flex-wrap:wrap;align-items:center;margin-bottom:14px;}
+  button{font-family:inherit;font-size:13px;padding:6px 12px;border-radius:4px;border:1px solid var(--line);
     background:var(--panel);color:var(--ink);cursor:pointer;transition:.12s;}
   button:hover{border-color:var(--accent);color:var(--accent);}
   button.primary{background:var(--accent);color:#fff;border-color:var(--accent);}
   button.primary:hover{opacity:.88;color:#fff;}
-  button.mini{padding:3px 8px;font-size:12px;line-height:1.3;}
-  table{width:100%;border-collapse:collapse;font-size:13.5px;}
-  th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);vertical-align:middle;}
-  thead th{background:var(--panel);font-size:11.5px;letter-spacing:.05em;color:var(--muted);
-    text-transform:uppercase;font-weight:600;}
+  table{width:100%;border-collapse:collapse;font-size:13.5px;margin:0 0 6px;}
+  th,td{text-align:left;padding:7px 9px;border-bottom:1px solid var(--line);vertical-align:top;}
+  thead th{background:var(--panel);font-size:11.5px;letter-spacing:.04em;color:var(--muted);
+    text-transform:uppercase;font-weight:600;border-bottom:1px solid #d5dade;}
+  tbody tr:last-child td{border-bottom:1px solid #d5dade;}
   td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+  tr.total td{font-weight:700;background:var(--accent-soft);}
   input{font-family:inherit;font-size:13.5px;padding:5px 7px;border:1px solid var(--line);
     border-radius:3px;background:#fff;color:var(--ink);width:100%;}
   input:focus{outline:2px solid var(--accent-soft);border-color:var(--accent);}
-  input.v{width:78px;text-align:right;font-variant-numeric:tabular-nums;}
-  input.s{width:92px;text-align:right;font-variant-numeric:tabular-nums;}
-  .totrow td{font-weight:700;background:var(--accent-soft);border-bottom:1px solid var(--line);}
+  input.v{width:76px;text-align:right;font-variant-numeric:tabular-nums;}
+  input.s{width:90px;text-align:right;font-variant-numeric:tabular-nums;}
+  select{font-family:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--line);
+    border-radius:4px;background:#fff;color:var(--ink);}
   .pill{display:inline-block;font-size:11px;padding:1px 8px;border-radius:10px;font-weight:600;
-    letter-spacing:.03em;white-space:nowrap;}
-  .pill.ok{background:var(--ok-soft);color:var(--ok);}
-  .pill.warn{background:var(--warn-soft);color:var(--warn);}
-  .pill.danger{background:var(--danger-soft);color:var(--danger);}
+    letter-spacing:.03em;white-space:nowrap;background:var(--accent-soft);color:var(--accent);}
+  .pill.ok,.pill.lo{background:var(--ok-soft);color:var(--ok);}
+  .pill.warn,.pill.mid{background:var(--warn-soft);color:var(--warn);}
+  .pill.danger,.pill.hi{background:var(--danger-soft);color:var(--danger);}
   .pill.info{background:var(--accent-soft);color:var(--accent);}
   .grid{display:flex;gap:22px;flex-wrap:wrap;}
-  .grid>div{flex:1 1 380px;min-width:320px;}
-  .stat{display:flex;gap:14px;flex-wrap:wrap;margin-bottom:6px;}
-  .stat .b{flex:1 1 150px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:10px 14px;}
+  .grid>div{flex:1 1 380px;min-width:300px;}
+  .cols{display:flex;gap:24px;flex-wrap:wrap;}
+  .cols>div{flex:1 1 300px;min-width:280px;}
+  .stat{display:flex;gap:12px;flex-wrap:wrap;margin-bottom:6px;}
+  .stat .b{flex:1 1 140px;background:var(--panel);border:1px solid var(--line);border-radius:4px;padding:9px 13px;}
   .stat .k{font-size:11px;color:var(--muted);letter-spacing:.05em;text-transform:uppercase;}
-  .stat .v{font-size:21px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.25;}
+  .stat .v{font-size:20px;font-weight:700;font-variant-numeric:tabular-nums;line-height:1.25;}
   .stat .u{font-size:12px;font-weight:400;color:var(--muted);}
   .gauge{margin:12px 0 4px;}
   .gtrack{position:relative;height:22px;border-radius:3px;overflow:hidden;display:flex;}
   .gz{height:100%;}
-  .gmark{position:absolute;top:-3px;width:3px;height:28px;background:var(--ink);border-radius:2px;
-    transition:left .18s ease;}
-  .glabels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:3px;
-    font-variant-numeric:tabular-nums;}
-  .msg{border-left:4px solid;border-radius:3px;padding:9px 13px;margin-bottom:8px;font-size:13px;}
-  .msg.danger{background:var(--danger-soft);border-color:var(--danger);}
-  .msg.warn{background:var(--warn-soft);border-color:var(--warn);}
-  .msg.ok{background:var(--ok-soft);border-color:var(--ok);}
-  .msg.info{background:var(--accent-soft);border-color:var(--accent);}
-  .msg b{font-weight:700;}
-  .hint{font-size:12px;color:var(--muted);margin:6px 0 0;}
+  .gmark{position:absolute;top:-3px;width:3px;height:28px;background:var(--ink);border-radius:2px;transition:left .18s ease;}
+  .glabels{display:flex;justify-content:space-between;font-size:11px;color:var(--muted);margin-top:3px;font-variant-numeric:tabular-nums;}
+  .msg,.box{border-left:4px solid;border-radius:3px;padding:10px 14px;margin-bottom:9px;font-size:13px;}
+  .msg.danger,.box.danger{background:var(--danger-soft);border-color:var(--danger);}
+  .msg.warn,.box.warn{background:var(--warn-soft);border-color:var(--warn);}
+  .msg.ok,.box.ok{background:var(--ok-soft);border-color:var(--ok);}
+  .msg.info,.box.info{background:var(--accent-soft);border-color:var(--accent);}
+  .box p{margin:0 0 6px;} .box p:last-child{margin-bottom:0;}
+  .t{font-weight:700;display:block;margin-bottom:4px;letter-spacing:.02em;}
+  .box.warn .t{color:var(--warn);} .box.danger .t{color:var(--danger);}
+  .box.ok .t{color:var(--ok);} .box.info .t{color:var(--accent);}
+  .hint,.note{font-size:12px;color:var(--muted);margin:6px 0 0;}
+  ul{margin:6px 0 0;padding-left:20px;} li{margin-bottom:5px;} li:last-child{margin-bottom:0;}
   .addrow{display:flex;gap:8px;align-items:center;margin-top:12px;flex-wrap:wrap;}
-  select{font-family:inherit;font-size:13px;padding:6px 8px;border:1px solid var(--line);
-    border-radius:4px;background:#fff;color:var(--ink);}
   .wsum{font-size:13px;background:var(--panel);border:1px solid var(--line);border-radius:4px;
     padding:10px 14px;margin-top:10px;font-variant-numeric:tabular-nums;}
-  footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);
-    font-size:11.5px;color:var(--muted);line-height:1.6;}
   .rm{color:var(--muted);border:none;background:none;font-size:16px;padding:0 4px;cursor:pointer;line-height:1;}
   .rm:hover{color:var(--danger);}
+  .conds{display:flex;gap:10px;flex-wrap:wrap;margin-bottom:12px;font-size:13.5px;}
+  .conds label{display:flex;align-items:center;gap:6px;cursor:pointer;padding:5px 12px;
+    border:1px solid var(--line);border-radius:20px;background:var(--panel);}
+  .conds label:hover{border-color:var(--accent);}
+  .conds input{width:auto;margin:0;}
+  .pcard{border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:4px;
+    padding:12px 16px;margin-bottom:10px;font-size:13px;background:var(--panel);}
+  .pcard h4{margin:0 0 8px;font-size:13.5px;color:var(--accent);letter-spacing:.03em;}
+  .pcard dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:4px 12px;}
+  .pcard dt{font-weight:700;white-space:nowrap;color:var(--muted);font-size:12px;padding-top:1px;}
+  .pcard dd{margin:0;}
+  .red{color:var(--danger);font-weight:600;}
+  .rx{background:var(--panel);border:1px solid var(--line);border-radius:3px;overflow:hidden;margin-bottom:10px;}
+  .rx table{margin:0;} .rx table th,.rx table td{padding:7px 14px;}
+  .rx-title{background:var(--accent);color:#fff;padding:9px 14px;font-weight:600;font-size:13.5px;
+    letter-spacing:.03em;display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;}
+  .rx-title span{font-weight:400;font-size:12.5px;opacity:.9;}
+  .mx{font-size:12.5px;}
+  .mx th,.mx td{padding:6px 3px;text-align:center;border:1px solid var(--line);}
+  .mx thead th{font-size:10.5px;letter-spacing:0;padding:6px 2px;}
+  .mx tbody th{text-align:left;background:var(--panel);font-weight:600;font-size:12px;
+    color:var(--ink);white-space:nowrap;padding-left:8px;}
+  .mx .y{background:var(--ok-soft);color:var(--ok);font-weight:700;}
+  .mx .c{background:var(--warn-soft);color:var(--warn);font-weight:700;}
+  .mx .n{background:var(--danger-soft);color:var(--danger);font-weight:700;}
+  .mx .self{background:#dfe3e6;}
+  .legend{display:flex;gap:18px;flex-wrap:wrap;font-size:12.5px;margin:8px 0 0;color:var(--muted);}
+  .scroll{overflow-x:auto;}
+  footer{margin-top:30px;padding-top:12px;border-top:1px solid var(--line);
+    font-size:11.5px;color:var(--muted);line-height:1.6;}
   @media print{
-    body{background:#fff;} .wrap{box-shadow:none;margin:0;padding:0 10mm;max-width:none;}
-    .noprint{display:none !important;} input,select{border:none;padding:0;background:transparent;}
-    @page{size:A4;margin:14mm 0;}
+    body{background:#fff;font-size:11.5px;}
+    .wrap{box-shadow:none;margin:0;padding:0 10mm;max-width:none;}
+    .noprint,.tabnav{display:none !important;}
+    .panel{display:block !important;page-break-before:always;}
+    .panel:first-of-type{page-break-before:auto;}
+    .ptitle{display:block;font-size:16px;font-weight:700;margin:0 0 14px;
+      padding-bottom:6px;border-bottom:2px solid #000;}
+    input,select{border:none;padding:0;background:transparent;}
+    .box,.rx,tr,.pcard{break-inside:avoid;}
+    @page{size:A4;margin:13mm 0;}
   }
 </style>
 </head>
@@ -103,57 +153,71 @@
 
 <header>
   <div>
-    <h1>中胚層注射配方計算機</h1>
-    <p class="sub">Mesotherapy Compounding Calculator — 最終濃度 · 滲透壓估算 · 安全區間檢核</p>
+    <h1>中胚層注射 臨床工具組</h1>
+    <p class="sub">配方計算 · 相容性 · 膚況調整 · 併發症鑑別</p>
   </div>
-  <div class="sub" style="text-align:right">院內醫師使用<br>所有數值為理論估算</div>
+  <div class="sub" style="text-align:right">v3.0 · 2026-09-09<br>院內醫師使用，數值為理論估算</div>
 </header>
 
-<div class="bar noprint">
-  <button class="primary" onclick="loadPreset('A')">載入配方 A（保濕）</button>
-  <button class="primary" onclick="loadPreset('B')">載入配方 B（美白）</button>
-  <button class="primary" onclick="loadPreset('C')">載入配方 C（水光肉毒）</button>
-  <button class="primary" onclick="loadPreset('D')">載入配方 D（PRP）</button>
-  <button onclick="clearAll()">清空</button>
-  <button onclick="window.print()">列印</button>
+<div class="tabnav">
+  <button class="on" onclick="tab(0,this)">配方計算機</button>
+  <button onclick="tab(1,this)">針劑與相容性</button>
+  <button onclick="tab(2,this)">標準配方</button>
+  <button onclick="tab(3,this)">膚況調整</button>
+  <button onclick="tab(4,this)">併發症鑑別</button>
+  <button onclick="tab(5,this)">操作與同意</button>
+  <button onclick="window.print()" style="margin-left:auto;border-bottom:1px solid var(--line)">列印全部</button>
 </div>
 
-<h2>一、成分與抽取量</h2>
-<table id="tbl">
-  <thead>
-    <tr>
-      <th style="width:26%">成分</th>
-      <th style="width:30%">原液濃度</th>
-      <th class="num" style="width:15%">滲透壓 mOsm/L</th>
-      <th class="num" style="width:15%">抽取量 cc</th>
-      <th class="num" style="width:14%">佔比</th>
-      <th class="noprint" style="width:34px"></th>
-    </tr>
-  </thead>
-  <tbody id="tbody"></tbody>
-  <tfoot id="tfoot"></tfoot>
-</table>
+<!-- ============ TAB 0 ============ -->
+<section class="panel on">
+<div class="ptitle">一、配方計算機</div>
 
+<div class="bar noprint">
+  <button class="primary" onclick="loadPreset('A')">A 保濕</button>
+  <button class="primary" onclick="loadPreset('B')">B 美白</button>
+  <button class="primary" onclick="loadPreset('C')">C 水光肉毒</button>
+  <button class="primary" onclick="loadPreset('D')">D PRP</button>
+  <button class="primary" onclick="loadPreset('E')">E Juvelook 基礎</button>
+  <button class="primary" onclick="loadPreset('F')">F Juvelook＋TXA</button>
+  <button onclick="clearAll()">清空</button>
+</div>
+
+<h2>病人膚況</h2>
+<div class="conds">
+  <label><input type="checkbox" class="cond" value="rosacea" onchange="calc()"> 酒糟 Rosacea</label>
+  <label><input type="checkbox" class="cond" value="sebd" onchange="calc()"> 脂漏性皮膚炎</label>
+  <label><input type="checkbox" class="cond" value="ad" onchange="calc()"> 異位性皮膚炎</label>
+</div>
+<div id="condpanel"></div>
+
+<h2>成分與抽取量</h2>
+<table>
+  <thead><tr>
+    <th style="width:24%">成分</th><th style="width:32%">原液濃度</th>
+    <th class="num" style="width:14%">滲透壓</th><th class="num" style="width:14%">抽取量 cc</th>
+    <th class="num" style="width:12%">佔比</th><th class="noprint" style="width:30px"></th>
+  </tr></thead>
+  <tbody id="tbody"></tbody>
+</table>
 <div class="addrow noprint">
   <select id="addsel"></select>
   <button onclick="addFromSel()">＋ 加入成分</button>
   <button onclick="addCustom()">＋ 自訂成分</button>
 </div>
-<p class="hint">原液濃度與滲透壓欄位皆可直接編輯 —— 換廠牌或不同規格時請依仿單修正。抽取量填 0 即不計入。</p>
+<p class="hint">濃度與滲透壓欄位皆可編輯 —— 換廠牌、換復溶體積時依仿單修正。抽取量填 0 即不計入。</p>
 
-<h2>二、最終濃度</h2>
+<h2>最終濃度</h2>
 <div class="stat" id="stats"></div>
 <table>
-  <thead>
-    <tr><th style="width:30%">活性成分</th><th class="num" style="width:18%">總量</th>
-    <th class="num" style="width:18%">最終濃度</th><th style="width:20%">建議區間</th><th style="width:14%">判定</th></tr>
-  </thead>
+  <thead><tr><th style="width:28%">活性成分</th><th class="num" style="width:16%">總量</th>
+  <th class="num" style="width:20%">最終濃度</th><th style="width:22%">建議區間</th><th style="width:14%">判定</th></tr></thead>
   <tbody id="conc"></tbody>
 </table>
 
-<h2>三、滲透壓</h2>
+<h2>滲透壓</h2>
 <div class="gauge">
-  <div class="gtrack" id="gtrack">
+  <div class="gtrack">
     <div class="gz" style="flex:250;background:var(--warn-soft)"></div>
     <div class="gz" style="flex:200;background:var(--ok-soft)"></div>
     <div class="gz" style="flex:150;background:var(--ok-soft)"></div>
@@ -163,74 +227,437 @@
   </div>
   <div class="glabels"><span>0</span><span>250 低張</span><span>450 理想</span><span>600 上限</span><span>1000+</span></div>
 </div>
-<p class="hint">估算法：各原液滲透壓 × 抽取量，加總後除以總體積。實際值受賦形劑影響，僅供相對比較。</p>
 
-<h2>四、安全檢核</h2>
+<h2>安全檢核</h2>
 <div class="grid">
+  <div><div id="msgs"></div></div>
+  <div><div class="wsum">
+    <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
+      <span style="white-space:nowrap">病人體重</span>
+      <input class="s" id="wt" type="number" value="55" min="20" max="150" step="1" oninput="calc()">
+      <span>kg</span>
+    </label>
+    <div id="lidosum"></div>
+  </div></div>
+</div>
+</section>
+
+<!-- ============ TAB 1 ============ -->
+<section class="panel">
+<div class="ptitle">二、針劑與相容性</div>
+
+<h2>現有針劑原始濃度</h2>
+<table>
+  <thead><tr><th style="width:20%">品項</th><th style="width:34%">原液濃度</th><th class="num" style="width:11%">滲透壓</th><th>備註</th></tr></thead>
+  <tbody>
+    <tr><td><b>SkinVive</b></td><td class="num">HA ≈ 12 mg/mL ＋ Lido 0.3%</td><td class="num">≈ 300</td><td><b>交聯</b> HA（Vycross），皮內微滴 bolus</td></tr>
+    <tr><td><b>Juvelook 50</b></td><td class="num">PDLLA 42.5 mg ＋ 非交聯 HA 7.5 mg／瓶<br>粒徑 10–40 μm</td><td class="num">≈ 0<br><span class="note">蒸餾水</span></td><td>生物刺激劑；<b>真皮淺層</b>；復溶體積依仿單／方案（0.75–6 mL 皆有）</td></tr>
+    <tr><td><b>Juvelook Volume</b></td><td class="num">PDLLA 170 mg ＋ 非交聯 HA 30 mg／瓶<br>粒徑 50–60 μm</td><td class="num">≈ 0</td><td><b>深真皮／皮下</b>，鈍針施打 —— 與上者非同一用途</td></tr>
+    <tr><td><b>Transamin</b></td><td class="num">50 mg/mL</td><td class="num">≈ 320</td><td>pH 7–8</td></tr>
+    <tr><td><b>Vitamin C</b></td><td class="num">250 mg/mL</td><td class="num">≈ 2840</td><td>極高張；查仿單有無 EDTA／metabisulfite</td></tr>
+    <tr><td><b>Soragen</b></td><td class="num">Glycyrrhizin 2 ／ L-Cysteine 1 ／ Glycine 20 mg/mL</td><td class="num">≈ 280</td><td>近中性，可部分取代 saline</td></tr>
+    <tr><td><b>ZnSO₄</b></td><td class="num">5.94 mg/mL ≈ 元素鋅 1.35 mg/mL</td><td class="num">≈ 45</td><td>以七水合計，<b>請依仿單確認水合物型態</b></td></tr>
+    <tr><td><b>肉毒素 A</b></td><td class="num">100 U ÷ 1／2.5／5 cc ＝ 100／40／20 U/mL</td><td class="num">≈ 308</td><td>PF saline 復溶，輕轉勿震盪</td></tr>
+    <tr><td><b>PLT in N/S</b></td><td class="num">自體血小板懸浮液</td><td class="num">≈ 308</td><td>製備後 30 分鐘內用畢</td></tr>
+    <tr><td><b>Lidocaine</b></td><td class="num">2%（20 mg/mL）</td><td class="num">≈ 300</td><td><b>plain、preservative-free</b>；含 epi 者 pH 3.3–5.5，不可用</td></tr>
+  </tbody>
+</table>
+
+<h2>相容性矩陣</h2>
+<div class="scroll">
+<table class="mx">
+  <thead><tr><th style="width:14%"></th><th>HA交聯</th><th>PDLLA</th><th>TXA</th><th>VC</th><th>Soragen</th><th>Zn</th><th>肉毒</th><th>PRP</th><th>Lido</th></tr></thead>
+  <tbody>
+    <tr><th>HA（交聯）</th><td class="self">—</td><td class="c">△</td><td class="y">○</td><td class="n">✗</td><td class="y">○</td><td class="c">△</td><td class="y">○</td><td class="y">○</td><td class="y">○</td></tr>
+    <tr><th>PDLLA</th><td class="c">△</td><td class="self">—</td><td class="y">○</td><td class="c">△</td><td class="y">○</td><td class="c">△</td><td class="y">○</td><td class="c">△</td><td class="y">○</td></tr>
+    <tr><th>Transamin</th><td class="y">○</td><td class="y">○</td><td class="self">—</td><td class="y">○</td><td class="y">○</td><td class="c">△</td><td class="y">○</td><td class="y">○</td><td class="y">○</td></tr>
+    <tr><th>Vitamin C</th><td class="n">✗</td><td class="c">△</td><td class="y">○</td><td class="self">—</td><td class="y">○</td><td class="n">✗</td><td class="n">✗</td><td class="n">✗</td><td class="y">○</td></tr>
+    <tr><th>Soragen</th><td class="y">○</td><td class="y">○</td><td class="y">○</td><td class="y">○</td><td class="self">—</td><td class="n">✗</td><td class="n">✗</td><td class="c">△</td><td class="y">○</td></tr>
+    <tr><th>Zinc</th><td class="c">△</td><td class="c">△</td><td class="c">△</td><td class="n">✗</td><td class="n">✗</td><td class="self">—</td><td class="c">△</td><td class="n">✗</td><td class="y">○</td></tr>
+    <tr><th>肉毒素 A</th><td class="y">○</td><td class="y">○</td><td class="y">○</td><td class="n">✗</td><td class="n">✗</td><td class="c">△</td><td class="self">—</td><td class="c">△</td><td class="y">○</td></tr>
+    <tr><th>PRP／PLT</th><td class="y">○</td><td class="c">△</td><td class="y">○</td><td class="n">✗</td><td class="c">△</td><td class="n">✗</td><td class="c">△</td><td class="self">—</td><td class="c">△</td></tr>
+    <tr><th>Lidocaine</th><td class="y">○</td><td class="y">○</td><td class="y">○</td><td class="y">○</td><td class="y">○</td><td class="y">○</td><td class="y">○</td><td class="c">△</td><td class="self">—</td></tr>
+  </tbody>
+</table>
+</div>
+<div class="legend">
+  <span><b style="color:var(--ok);font-size:14px">○</b> 可同管</span>
+  <span><b style="color:var(--warn);font-size:14px">△</b> 注意／資料不足，先小量試混</span>
+  <span><b style="color:var(--danger);font-size:14px">✗</b> 不可同管</span>
+</div>
+
+<h3>✗ 的理由</h3>
+<table>
+  <thead><tr><th style="width:20%">組合</th><th>機轉</th></tr></thead>
+  <tbody>
+    <tr><td><b>VC × 交聯 HA</b></td><td>抗壞血酸在微量金屬離子下產生自由基，加速 HA 解聚；HA 也縮短 VC 穩定時間</td></tr>
+    <tr><td><b>VC × 肉毒</b></td><td>肉毒素輕鏈／重鏈間靠<b>雙硫鍵</b>連結，抗壞血酸為還原劑可切斷該鍵使毒素失活 —— 效果<b>不可預測</b>，易誤判為抗體產生</td></tr>
+    <tr><td><b>Soragen × 肉毒</b></td><td>同上，<b>L-Cysteine</b> 是更強的還原劑（硫醇基）。穀胱甘肽（Tationil）同理</td></tr>
+    <tr><td><b>VC × Zn</b></td><td>VC 針劑多以碳酸氫鈉緩衝 → <b>碳酸鋅沉澱</b></td></tr>
+    <tr><td><b>Soragen × Zn</b></td><td>Cysteine（硫醇）與 Glycine 強力螯合游離鋅 —— 沉澱風險外，鋅也等於白加</td></tr>
+    <tr><td><b>VC × PRP</b></td><td>高張且偏酸，血小板於 pH &lt; 6.5 提早活化失能</td></tr>
+    <tr><td><b>Zn × PRP</b></td><td>Zn²⁺ 為血小板促凝集劑；若仍含檸檬酸抗凝劑，Zn²⁺ 競爭結合後釋出 Ca²⁺ → <b>針筒內啟動凝血</b></td></tr>
+  </tbody>
+</table>
+
+<h3>△ 的理由</h3>
+<table>
+  <thead><tr><th style="width:20%">組合</th><th>說明</th></tr></thead>
+  <tbody>
+    <tr><td><b>PDLLA × 交聯 HA</b></td><td>生物刺激劑微球懸浮於黏稠交聯凝膠中<b>分散不均、易聚集</b> —— 正是 PDLLA 結節的成因。且日後若形成結節，玻尿酸酶只溶得掉 HA，<b>溶不掉 PDLLA</b>，等於自廢救援手段。建議分管、分次施打</td></tr>
+    <tr><td><b>PDLLA × VC</b></td><td>低 pH 加速聚乳酸酯鍵水解；VC 的刺激性也不利於依賴受控發炎反應的生物刺激劑</td></tr>
+    <tr><td><b>PDLLA × Zn／PRP</b></td><td>無直接衝突機轉但無資料；PRP 與 PDLLA 皆誘發組織反應，結節風險是否相加未知</td></tr>
+    <tr><td><b>Zn × TXA／HA／肉毒</b></td><td>Zn²⁺ 於 pH &gt; 7 沉澱為 Zn(OH)₂（TXA pH 7–8）；HA 為聚陰離子，二價陽離子造成聚集；鋅助長肉毒的證據來自<b>口服</b>，同管注射無實證</td></tr>
+    <tr><td><b>PRP × Lidocaine</b></td><td>局麻藥抑制血小板功能與生長因子釋放並降低 pH。建議改表麻／神經阻斷；必要時控制在總量 10% 以內</td></tr>
+    <tr><td><b>PRP × 肉毒／Soragen</b></td><td>無直接衝突機轉，但缺乏資料。首次混合先小量試混觀察 10 分鐘</td></tr>
+  </tbody>
+</table>
+
+<div class="box danger">
+  <span class="t">最需要單獨隔離的兩個成分</span>
+  <p><b>鋅</b>與<b>維他命 C</b> —— 兩者的 ✗／△ 佔了整張表大半。建議一律走獨立載體（saline ＋ lidocaine），不併入主配方。</p>
+</div>
+</section>
+
+<!-- ============ TAB 2 ============ -->
+<section class="panel">
+<div class="ptitle">三、標準配方</div>
+
+<div class="rx">
+  <div class="rx-title">配方 A — 保濕水光 <span>總量 2.75 cc · 滲透壓 ≈ 306</span></div>
+  <table><thead><tr><th>成分</th><th class="num">抽取量</th><th class="num">最終濃度</th></tr></thead><tbody>
+    <tr><td>SkinVive</td><td class="num">1.0 cc</td><td class="num">HA ≈ 4.4 mg/mL</td></tr>
+    <tr><td>Normal saline</td><td class="num">1.0 cc</td><td class="num">—</td></tr>
+    <tr><td>Transamin</td><td class="num">0.5 cc</td><td class="num">≈ 9 mg/mL</td></tr>
+    <tr><td>Lidocaine 2%</td><td class="num">0.25 cc</td><td class="num">≈ 0.29%</td></tr>
+    <tr class="total"><td>總計</td><td class="num">2.75 cc</td><td class="num">—</td></tr>
+  </tbody></table>
+</div>
+
+<div class="rx">
+  <div class="rx-title">配方 B — 美白亮白 <span>總量 5.0 cc · 滲透壓 ≈ 501</span></div>
+  <table><thead><tr><th>成分</th><th class="num">抽取量</th><th class="num">最終濃度</th></tr></thead><tbody>
+    <tr><td>Transamin</td><td class="num">1.0 cc</td><td class="num">10 mg/mL</td></tr>
+    <tr><td>Soragen</td><td class="num">2.0 cc</td><td class="num">Glycyrrhizin 0.8 mg/mL</td></tr>
+    <tr><td>Vitamin C</td><td class="num">0.4 cc</td><td class="num">20 mg/mL（2%）</td></tr>
+    <tr><td>Lidocaine 2%</td><td class="num">0.5 cc</td><td class="num">≈ 0.2%</td></tr>
+    <tr><td>Normal saline</td><td class="num">1.1 cc</td><td class="num">—</td></tr>
+    <tr class="total"><td>總計</td><td class="num">5.0 cc</td><td class="num">—</td></tr>
+  </tbody></table>
+</div>
+<p class="note">VC 提到 0.5 cc 會使滲透壓升至約 552 mOsm/L，逼近 600 上限；敏感者降至 0.3 cc（≈ 450）。</p>
+
+<div class="rx">
+  <div class="rx-title">配方 C — 水光肉毒 <span>總量 2.75 cc · 滲透壓 ≈ 303</span></div>
+  <table><thead><tr><th>成分</th><th class="num">抽取量</th><th class="num">最終濃度</th></tr></thead><tbody>
+    <tr><td>SkinVive</td><td class="num">1.0 cc</td><td class="num">HA ≈ 4.4 mg/mL</td></tr>
+    <tr><td>肉毒 40 U/mL</td><td class="num">0.75 cc</td><td class="num">30 U 全臉 ≈ 11 U/mL</td></tr>
+    <tr><td>Transamin</td><td class="num">0.5 cc</td><td class="num">≈ 9 mg/mL</td></tr>
+    <tr><td>Normal saline</td><td class="num">0.25 cc</td><td class="num">—</td></tr>
+    <tr><td>Lidocaine 2%</td><td class="num">0.25 cc</td><td class="num">≈ 0.2%</td></tr>
+    <tr class="total"><td>總計</td><td class="num">2.75 cc</td><td class="num">—</td></tr>
+  </tbody></table>
+</div>
+
+<div class="rx">
+  <div class="rx-title">配方 D — PRP <span>總量 2.75 cc · 滲透壓 ≈ 309</span></div>
+  <table><thead><tr><th>成分</th><th class="num">抽取量</th><th class="num">最終濃度</th></tr></thead><tbody>
+    <tr><td>PLT in N/S</td><td class="num">2.0 cc</td><td class="num">73% v/v</td></tr>
+    <tr><td>Transamin</td><td class="num">0.5 cc</td><td class="num">≈ 9 mg/mL</td></tr>
+    <tr><td>Lidocaine 2%</td><td class="num">0.25 cc</td><td class="num">≈ 0.18%（可省略）</td></tr>
+    <tr class="total"><td>總計</td><td class="num">2.75 cc</td><td class="num">—</td></tr>
+  </tbody></table>
+</div>
+<p class="note">血小板佔比維持 ≥ 50%。鋅、VC 一律不入此管。</p>
+
+<div class="rx">
+  <div class="rx-title">配方 E — Juvelook 基礎 <span>總量 5.5 cc · 以復溶 5 mL 計</span></div>
+  <table><thead><tr><th>成分</th><th class="num">抽取量</th><th class="num">最終濃度</th></tr></thead><tbody>
+    <tr><td>Juvelook 50（蒸餾水復溶 5 mL）</td><td class="num">5.0 cc</td><td class="num">PDLLA ≈ 7.7 mg/mL<br>非交聯 HA ≈ 1.4 mg/mL</td></tr>
+    <tr><td>Lidocaine 2%</td><td class="num">0.5 cc</td><td class="num">≈ 0.18%</td></tr>
+    <tr class="total"><td>總計</td><td class="num">5.5 cc</td><td class="num">滲透壓 ≈ 27（預期低張）</td></tr>
+  </tbody></table>
+</div>
+
+<div class="rx">
+  <div class="rx-title">配方 F — Juvelook ＋ TXA <span>總量 6.0 cc</span></div>
+  <table><thead><tr><th>成分</th><th class="num">抽取量</th><th class="num">最終濃度</th></tr></thead><tbody>
+    <tr><td>Juvelook 50（蒸餾水復溶 5 mL）</td><td class="num">5.0 cc</td><td class="num">PDLLA ≈ 7.1 mg/mL</td></tr>
+    <tr><td>Transamin</td><td class="num">0.5 cc</td><td class="num">≈ 4.2 mg/mL</td></tr>
+    <tr><td>Lidocaine 2%</td><td class="num">0.5 cc</td><td class="num">≈ 0.17%</td></tr>
+    <tr class="total"><td>總計</td><td class="num">6.0 cc</td><td class="num">滲透壓 ≈ 52</td></tr>
+  </tbody></table>
+</div>
+
+<div class="box info">
+  <span class="t">Juvelook 的復溶體積沒有單一標準答案</span>
+  <p>目前流通的方案差異極大 —— 仿單版本有標示 0.75 mL 者，也有臨床方案使用 5–6 mL。<b>本表以 5 mL 為計算示範，請依你手上該批號的仿單與所採用方案自行代入</b>；計算機的濃度欄位可直接改。</p>
+  <p>復溶後<b>靜置至完全分散、無可見顆粒</b>再用；<b>輕轉搖勻，不可劇烈震盪</b>（會破壞微球）。TXA 與 lidocaine 等含電解質的溶液<b>在施打前才加入</b>，加入後盡快用完。</p>
+</div>
+
+<div class="box warn">
+  <span class="t">Juvelook ＋ SkinVive 同管：不建議</span>
+  <p>兩者化學上不衝突，問題在<b>物理與退路</b>：PDLLA 微球懸浮在交聯凝膠裡分散不均、容易局部聚集，而微球聚集正是 PDLLA 結節的主因。更關鍵的是，一旦形成結節，<b>玻尿酸酶只能溶掉 HA，對 PDLLA 完全無效</b> —— 混在一起等於把唯一的可逆成分稀釋掉，卻保留不可逆的那一半。</p>
+  <p><b>建議改成分管兩道</b>：先打 Juvelook（真皮淺層、均勻鋪點、術後按摩），再以另一管 SkinVive 補做微滴；或直接分次療程。TXA 要加沒問題，最後才加。</p>
+</div>
+</section>
+
+<!-- ============ TAB 3 ============ -->
+<section class="panel">
+<div class="ptitle">四、特殊膚況調整</div>
+
+<table>
+  <thead><tr><th style="width:13%"></th><th style="width:22%">酒糟 Rosacea</th><th style="width:22%">脂漏性皮膚炎</th><th style="width:22%">異位性皮膚炎</th></tr></thead>
+  <tbody>
+    <tr><th style="text-align:left">緩解期皮膚</th><td>接近正常</td><td>接近正常</td><td><b>仍非正常</b>（TEWL 升高、次臨床發炎）</td></tr>
+    <tr><th style="text-align:left">主要風險</th><td>誘發潮紅發作</td><td>Malassezia 毛囊炎</td><td><b>S. aureus 感染、疱疹性濕疹、致敏</b></td></tr>
+    <tr><th style="text-align:left">穩定期門檻</th><td>丘疹膿皰 ≥ 4 週無新發；<b>擦保濕不刺痛</b></td><td>施打區 ≥ 2–4 週無脫屑紅斑</td><td><b>全身</b>無病灶 ≥ 4–8 週</td></tr>
+    <tr><th style="text-align:left">建議配方</th><td>C（HA＋肉毒＋TXA）</td><td>C（肉毒控油）</td><td><b>極簡</b>：HA ＋ saline</td></tr>
+    <tr><th style="text-align:left">禁用</th><td>VC、Zn</td><td>VC；Zn 改外用</td><td>VC、Zn；lidocaine 亦不入管</td></tr>
+    <tr><th style="text-align:left">PRP</th><td>△ 鼻贅傾向或明顯血管絲避開（VEGF／TGF-β）</td><td>△ IGF-1 可能刺激皮脂腺</td><td>○ 自體無致敏路徑，但不降感染風險</td></tr>
+    <tr><th style="text-align:left">PDLLA</th><td>△ 作用機轉依賴受控異物反應；發炎性疾病上結節與泛紅風險理論上升</td><td>△ 資料不足；穩定期可考慮，先試打</td><td>△ 植入性材料 ＋ 高帶菌率，寧可先用簡單配方</td></tr>
+    <tr><th style="text-align:left">滲透壓上限</th><td class="num">≤ 350</td><td class="num">≤ 400</td><td class="num">≤ 350</td></tr>
+    <tr><th style="text-align:left">術前</th><td>維持治療不停；停酸類 5–7 天</td><td><b>ketoconazole 2% 減菌 1–2 週</b></td><td>HSV 病史給 <b>valacyclovir</b> 預防</td></tr>
+    <tr><th style="text-align:left">術後</th><td>修復型乳霜</td><td><span class="pill hi">清爽、非封閉、不含脂質</span></td><td><span class="pill lo">厚重、封閉、含油</span></td></tr>
+    <tr><th style="text-align:left">紅旗</th><td>蒼白、網狀紅斑、劇痛 → 血管栓塞</td><td>1–2 週單一形態毛囊丘疹且癢 → 糠疹毛囊炎（<b>抗黴菌非抗生素</b>）</td><td>成簇水疱、鑿孔糜爛、發燒 → <b>疱疹性濕疹，急症</b></td></tr>
+  </tbody>
+</table>
+
+<div class="box warn">
+  <span class="t">AD 與脂漏並存時的護理衝突</span>
+  <p>脂漏術後要清爽非封閉（避免餵養 Malassezia），AD 術後要厚重封閉（屏障修復）。<b>分區處理</b> —— 兩頰按 AD、T 字與眉間鼻翼按脂漏。</p>
+</div>
+
+<div class="box danger">
+  <span class="t">一律不施打的情況</span>
+  <p>正在丘疹膿皰期、擦保濕即刺痛、活動性脫屑或濕疹病灶。屏障已破的皮膚再加機械與化學刺激，沒有例外。</p>
+</div>
+
+<div class="box info">
+  <span class="t">為何酒糟反而適合配方 C</span>
+  <p><b>TXA</b> 抑制 plasmin → 降低 PAR-2 活化與 VEGF；<b>肉毒</b>抑制血管舒張性神經傳導與肥大細胞去顆粒。兩者在酒糟紅斑／潮紅皆有正向文獻 —— 此處接近治療而非美容，不必靠機轉推論。</p>
+</div>
+</section>
+
+<!-- ============ TAB 4 ============ -->
+<section class="panel">
+<div class="ptitle">五、結節與併發症鑑別</div>
+
+<table>
+  <thead><tr><th style="width:18%">類型</th><th style="width:13%">出現時間</th><th style="width:19%">觸感</th><th style="width:14%">會消失嗎</th><th>處理</th></tr></thead>
+  <tbody>
+    <tr><td><b>自體凝塊／纖維蛋白</b><br><span class="note">PRP</span></td><td>當下～24 小時</td><td>軟、可推動、不太紅</td><td><span class="pill lo">會，1–3 週</span></td><td>觀察、熱敷、輕按摩</td></tr>
+    <tr><td><b>交聯 HA 丘疹</b><br><span class="note">SkinVive 打太淺</span></td><td>當下～數天</td><td>硬、界線清楚、可能透藍</td><td><span class="pill mid">不一定，可達數月</span></td><td><b>玻尿酸酶 5–15 U 局部</b></td></tr>
+    <tr><td><b>PDLLA 結節</b><br><span class="note">Juvelook</span></td><td>數週～數月<br><span class="note">亦可早發</span></td><td>硬、深、界線較不清</td><td><span class="pill hi">不會自行消退<br>玻尿酸酶無效</span></td><td>病灶內類固醇 ±5-FU、按摩、熱敷；文獻另有能量儀器輔助之報告</td></tr>
+    <tr><td><b>刺激性發炎結節</b><br><span class="note">VC 過濃、鋅</span></td><td>24–72 小時</td><td>紅、腫、壓痛</td><td><span class="pill lo">多數會，2–6 週</span></td><td>冰敷 → 外用／病灶內類固醇；防曬防 PIH</td></tr>
+    <tr><td><b>Malassezia 毛囊炎</b><br><span class="note">脂漏族群</span></td><td>1–2 週</td><td>單一形態毛囊丘疹膿皰、<b>癢</b></td><td><span class="pill mid">需治療</span></td><td>口服 itraconazole 或外用抗黴菌 —— <b>非抗生素</b></td></tr>
+    <tr><td><b>遲發性結節／生物膜</b></td><td><b>&gt; 2 週</b></td><td>紅腫熱痛、可能有波動感</td><td><span class="pill hi">不會自行消失</span></td><td>doxycycline 或 clarithromycin ＋ ciprofloxacin 2–6 週；<b>先別打類固醇</b></td></tr>
+  </tbody>
+</table>
+
+<div class="box info">
+  <span class="t">最關鍵的分水嶺是「出現時間」</span>
+  <p><b>打完當下或隔天</b>出現 → 幾乎都是物理性的（凝塊、產品位置、刺激），良性，會退。<br>
+  <b>兩週以上才冒出、且紅腫熱痛</b> → 想感染或生物膜，不會自己好，<b>打類固醇會讓它爆掉</b>。<br>
+  <b>兩週以上、不紅不痛的硬結，且用過 PDLLA</b> → 想生物刺激劑結節，處置方向完全不同。</p>
+</div>
+
+<div class="box warn">
+  <span class="t">玻尿酸酶不是萬用解</span>
+  <p>它只作用於 HA。<b>PDLLA、PLLA、CaHA 結節打玻尿酸酶完全無效</b>。所以任何把 HA 與生物刺激劑混在同一管的做法，都在稀釋自己唯一可逆的那一半。</p>
+</div>
+
+<div class="box warn">
+  <span class="t">TXA 的一個副作用面向</span>
+  <p>配方含 TXA 時，局部抗纖溶作用理論上會延緩自體凝塊自溶。結節超過一個月未退，除鑑別感染外，熱敷與按摩會比繼續等待有用。</p>
+</div>
+
+<div class="box danger">
+  <span class="t">立即處理的紅旗</span>
+  <p>蒼白、網狀紅斑（livedo）、與外觀不成比例的劇痛、逐漸擴大的暗紫色斑 → <b>血管栓塞</b>。立即熱敷、按摩，含 HA 者立刻打玻尿酸酶，不要等待觀察。</p>
+</div>
+</section>
+
+<!-- ============ TAB 5 ============ -->
+<section class="panel">
+<div class="ptitle">六、操作與知情同意</div>
+
+<div class="cols">
   <div>
-    <div id="msgs"></div>
+    <h2>配製</h2>
+    <ul>
+      <li>全程無菌；<b>當場配、當場用完</b>，不預配不留存。</li>
+      <li>Saline 與 Lidocaine 一律 <b>preservative-free</b>。</li>
+      <li>加藥順序：saline／Soragen → TXA → Lidocaine → <b>VC 最後加</b>；輕轉勻，勿劇烈震盪。</li>
+      <li><b>Juvelook</b>：先以指定稀釋液復溶並靜置至完全分散無可見顆粒；含電解質的成分（TXA、lidocaine）<b>施打前才加</b>。</li>
+      <li>含 VC 者避光，<b>30 分鐘內用畢</b>；轉黃即氧化，丟棄。</li>
+      <li>含鋅或 PRP 者<b>靜置 5–10 分鐘後對光目視</b>，任何混濁、絮狀、結晶即整管丟棄。</li>
+    </ul>
   </div>
   <div>
-    <div class="wsum">
-      <label style="display:flex;align-items:center;gap:8px;margin-bottom:8px">
-        <span style="white-space:nowrap">病人體重</span>
-        <input class="s" id="wt" type="number" value="55" min="20" max="150" step="1" oninput="calc()">
-        <span>kg</span>
-      </label>
-      <div id="lidosum"></div>
-    </div>
+    <h2>注射</h2>
+    <ul>
+      <li>深度：真皮淺中層 <b>1.0–1.5 mm</b>。</li>
+      <li>針具：32–33G，或 5/9 針水光槍。</li>
+      <li>術前表面麻醉 20–30 分鐘（配方內 lidocaine 不足以單獨止痛）。</li>
+      <li><b>肉毒</b>：嚴格控制深度；下臉（顴大肌、笑肌）與眼周過深會造成笑容不對稱或眼瞼下垂。</li>
+      <li><b>PRP</b>：水光槍改低壓或手動（血小板對剪切力敏感）。</li>
+      <li><b>PDLLA</b>：均勻鋪點勿在單點堆量；術後按摩以分散微球。</li>
+      <li><b>推注阻力突然變大即停手</b>，換針檢查，不要硬推。</li>
+    </ul>
   </div>
+</div>
+
+<h2>安全區間速查</h2>
+<table>
+  <thead><tr><th style="width:20%">成分</th><th style="width:30%">皮內建議區間</th><th>限制因素</th></tr></thead>
+  <tbody>
+    <tr><td>HA（交聯）</td><td class="num">≥ 4 mg/mL（稀釋 ≤ 1:2）</td><td>低於此即失去補水意義</td></tr>
+    <tr><td>PDLLA</td><td class="num">依復溶體積與方案</td><td>無公認皮內濃度區間；<b>分散均勻度比濃度更決定結節風險</b></td></tr>
+    <tr><td>Transamin</td><td class="num">4 – 10 mg/mL</td><td>文獻區間</td></tr>
+    <tr><td>Vitamin C</td><td class="num">10 – 25 mg/mL</td><td>疼痛、發炎、PIH</td></tr>
+    <tr><td>肉毒素 A</td><td class="num">5 – 20 U/mL；單次 ≤ 50 U</td><td>擴散與表情肌影響；間隔 ≥ 3 個月</td></tr>
+    <tr><td>元素鋅</td><td class="num">≤ 0.5 mg/mL</td><td>刺激性；文獻極少</td></tr>
+    <tr><td>血小板</td><td class="num">≥ 50% v/v</td><td>稀釋抵銷濃縮</td></tr>
+    <tr><td>Lidocaine</td><td class="num">4.5 mg/kg（不含 epi）</td><td>實務遠不會達到，勿以此為調高理由</td></tr>
+    <tr><td><b>滲透壓</b></td><td class="num"><b>300 – 450（上限 600）</b></td><td><b>最常被忽略的參數</b>；PDLLA 配方以蒸餾水為載體時低張屬預期</td></tr>
+  </tbody>
+</table>
+
+<div class="box info">
+  <span class="t">調整配方的四個原則</span>
+  <p>① 一次只改一個變數 ② 新配方先單側試打 0.2 cc，觀察 48 小時（特殊膚況觀察 2 週）③ 活性成分控制在 4 種以內 ④ 每版配方編號寫進病歷（例如 B-2026-01），改配方即升版號</p>
+</div>
+
+<h2>禁忌</h2>
+<ul>
+  <li><b>絕對禁忌</b>：注射部位活動性感染或發炎、對任一成分過敏、懷孕／哺乳。</li>
+  <li><b>PRP 通用禁忌</b>：血小板減少、血液惡性疾病、使用抗凝劑中、活動性全身感染或菌血症。</li>
+  <li><b>PRP 器材查核</b>：確認採血系統<b>有無分離膠</b>（膠粒可致異物反應）；若使用<b>牛凝血酶</b>活化劑請更換 —— 那是真正的免疫原。</li>
+  <li><b>PDLLA</b>：蟹足腫／肥厚性疤痕體質、自體免疫或肉芽腫性疾病病史者謹慎；<b>結節不可逆，事前說明須特別完整</b>。</li>
+  <li><b>Transamin</b>：血栓病史、口服避孕藥使用中、凝血異常者需評估並記錄。</li>
+  <li><b>Glycyrrhizin</b>：全身大劑量致假性醛固酮增多症；高血壓與低血鉀者注意累積量。</li>
+  <li><b>肉毒</b>：神經肌肉疾病（重症肌無力、Lambert-Eaton）、氨基糖苷類使用中；間隔 ≥ 3 個月。</li>
+  <li>深膚色（Fitzpatrick IV–VI）對刺激性配方更易 PIH，自最低濃度起始。</li>
+</ul>
+
+<div class="box ok">
+  <span class="t">同意書須載明</span>
+  <p>① 本療程為<b>仿單標示外（off-label）混合使用</b>，開放式抽取已破壞原廠無菌封閉系統，廠商保固與不良事件責任認定存在爭議 ② 配方成分與濃度 ③ 可能出現暫時性丘疹、結節、瘀青、色素沉著 ④ <b>特殊膚況者可能誘發原有疾病發作</b>（單獨列一條）⑤ 使用生物刺激劑者，<b>結節可能延遲發生且無法以玻尿酸酶反轉</b>（單獨列一條）</p>
 </div>
 
 <footer>
-  本計算機僅為臨床作業輔助工具，濃度與滲透壓皆為理論估算值，不取代醫師judgment。所有配方屬仿單標示外（off-label）混合使用，開放式抽取已破壞原廠無菌封閉系統，須無菌操作、當場配當場用完。使用前請核對各批號仿單之濃度與賦形劑（特別是 EDTA、metabisulfite、preservative）。<br>
-  v1.3 · 2026-08-12 · 含 PRP · HA / TXA / Vitamin C / Soragen / Lidocaine / 肉毒 / 鋅
+  本工具為院內臨床作業輔助文件。所有濃度與滲透壓為理論計算值，實際使用須由主治醫師依個別病人狀況判斷並負完全責任。相容性判定中標示「資料不足」者為機轉推論，非臨床實證。使用前請核對各批號仿單之濃度、水合物型態、復溶體積與賦形劑（EDTA、metabisulfite、preservative）。<br>
+  v3.0 · 2026-09-09 · 修訂時請更新版本號並同步病歷配方編號
 </footer>
-
-</div>
+</section>
 
 <script>
-/* ---------- 活性成分定義 ---------- */
+/* ---------- 活性成分 ---------- */
 const AM = {
-  ha:   {label:'HA（玻尿酸）', unit:'mg/mL', ok:[4,null],  amber:[2,null], range:'≥ 4 mg/mL', note:'低於 4 表示稀釋過度'},
+  ha:   {label:'HA（交聯）', unit:'mg/mL', ok:[4,null], amber:[2,null], range:'≥ 4 mg/mL'},
+  hanx: {label:'HA（非交聯）', unit:'mg/mL', info:true, range:'隨產品固定'},
+  pdlla:{label:'PDLLA', unit:'mg/mL', info:true, range:'依復溶體積'},
   txa:  {label:'Tranexamic acid', unit:'mg/mL', ok:[4,10], amber:[2,15], range:'4 – 10 mg/mL'},
   vitc: {label:'Vitamin C', unit:'mg/mL', ok:[10,25], amber:[5,35], range:'10 – 25 mg/mL'},
   lido: {label:'Lidocaine', unit:'mg/mL', ok:[0,20], amber:[0,30], range:'≤ 20 mg/mL（2%）'},
-  btx:  {label:'肉毒桿菌素 A', unit:'U/mL', ok:[5,20], amber:[2,30], range:'5 – 20 U/mL（微滴）', reducible:true},
-  zn:   {label:'Zinc（元素鋅）', unit:'mg/mL', ok:[0,0.5], amber:[0,1.0], range:'≤ 0.5 mg/mL（文獻有限）'},
-  plt:  {label:'血小板懸浮液（PRP/PLT）', unit:'%', ok:[50,100], amber:[30,100], range:'≥ 50% v/v'},
+  btx:  {label:'肉毒桿菌素 A', unit:'U/mL', ok:[5,20], amber:[2,30], range:'5 – 20 U/mL'},
+  zn:   {label:'Zinc（元素鋅）', unit:'mg/mL', ok:[0,0.5], amber:[0,1.0], range:'≤ 0.5 mg/mL'},
+  plt:  {label:'血小板懸浮液', unit:'%', ok:[50,100], amber:[30,100], range:'≥ 50% v/v'},
   glyc: {label:'Glycyrrhizic acid', unit:'mg/mL', info:true, range:'參考值'},
   cys:  {label:'L-Cysteine', unit:'mg/mL', info:true, range:'參考值'},
   gly:  {label:'Glycine', unit:'mg/mL', info:true, range:'張力調節劑'}
 };
 
-/* ---------- 針劑資料庫 ---------- */
+/* ---------- 針劑庫 ---------- */
 const LIB = {
-  skinvive: {name:'SkinVive', osm:300, desc:'HA 12 mg/mL + Lido 3 mg/mL', act:[['ha',12],['lido',3]]},
+  skinvive: {name:'SkinVive', osm:300, desc:'交聯 HA 12 ＋ Lido 3 mg/mL', act:[['ha',12],['lido',3]]},
+  juve50:   {name:'Juvelook 50（復溶 5 mL）', osm:0, desc:'PDLLA 8.5 ＋ HA 1.5 mg/mL', act:[['pdlla',8.5],['hanx',1.5]]},
+  juve200:  {name:'Juvelook Volume（復溶 5 mL）', osm:0, desc:'PDLLA 34 ＋ HA 6 mg/mL', act:[['pdlla',34],['hanx',6]]},
   txa:      {name:'Transamin', osm:320, desc:'50 mg/mL', act:[['txa',50]]},
   vitc:     {name:'Vitamin C', osm:2840, desc:'250 mg/mL', act:[['vitc',250]]},
   soragen:  {name:'Soragen', osm:280, desc:'Glyc 2 / Cys 1 / Gly 20 mg/mL', act:[['glyc',2],['cys',1],['gly',20]]},
-  lido2:    {name:'Lidocaine 2%', osm:300, desc:'20 mg/mL（plain, PF）', act:[['lido',20]]},
-  lido1:    {name:'Lidocaine 1%', osm:300, desc:'10 mg/mL（plain, PF）', act:[['lido',10]]},
+  znso4:    {name:'ZnSO₄ 5.94 mg/mL', osm:45, desc:'≈ 元素鋅 1.35 mg/mL', act:[['zn',1.35]]},
   btx40:    {name:'肉毒 100U ÷ 2.5cc', osm:308, desc:'40 U/mL', act:[['btx',40]]},
   btx20:    {name:'肉毒 100U ÷ 5cc', osm:308, desc:'20 U/mL', act:[['btx',20]]},
   btx100:   {name:'肉毒 100U ÷ 1cc', osm:308, desc:'100 U/mL', act:[['btx',100]]},
-  znso4:    {name:'ZnSO₄ 5.94 mg/mL', osm:45, desc:'≈ 元素鋅 1.35 mg/mL（七水合）', act:[['zn',1.35]]},
-  plt:      {name:'PLT in N/S', osm:308, desc:'血小板懸浮液（原液 100%）', act:[['plt',100]]},
+  plt:      {name:'PLT in N/S', osm:308, desc:'血小板懸浮液（100%）', act:[['plt',100]]},
+  lido2:    {name:'Lidocaine 2%', osm:300, desc:'20 mg/mL（plain, PF）', act:[['lido',20]]},
+  lido1:    {name:'Lidocaine 1%', osm:300, desc:'10 mg/mL（plain, PF）', act:[['lido',10]]},
   saline:   {name:'Normal saline', osm:308, desc:'0.9% NaCl', act:[]},
-  wfi:      {name:'注射用水', osm:0, desc:'低張，慎用', act:[]}
+  wfi:      {name:'蒸餾水／注射用水', osm:0, desc:'0 mOsm/L', act:[]}
 };
 
 const PRESETS = {
-  A: [['skinvive',1.0],['saline',1.0],['txa',0.5],['lido2',0.25]],
-  B: [['txa',1.0],['soragen',2.0],['vitc',0.4],['lido2',0.5],['saline',1.1]],
-  C: [['skinvive',1.0],['btx40',0.75],['txa',0.5],['saline',0.25],['lido2',0.25]],
-  D: [['plt',2.0],['txa',0.5],['lido2',0.25]]
+  A:[['skinvive',1.0],['saline',1.0],['txa',0.5],['lido2',0.25]],
+  B:[['txa',1.0],['soragen',2.0],['vitc',0.4],['lido2',0.5],['saline',1.1]],
+  C:[['skinvive',1.0],['btx40',0.75],['txa',0.5],['saline',0.25],['lido2',0.25]],
+  D:[['plt',2.0],['txa',0.5],['lido2',0.25]],
+  E:[['juve50',5.0],['lido2',0.5]],
+  F:[['juve50',5.0],['txa',0.5],['lido2',0.5]]
+};
+
+/* ---------- 膚況 ---------- */
+const COND = {
+  rosacea:{ name:'酒糟', maxOsm:350,
+    rules:{
+      vitc:['danger','酸性、高張、刺激性 —— 在酒糟幾乎必然誘發發作。移除。'],
+      zn:['danger','鋅鹽具收斂刺激性，會誘發泛紅與刺癢。移除。'],
+      plt:['warn','血小板含 VEGF／PDGF。<b>鼻贅傾向或明顯血管絲者避開</b>；其餘可用，務必搭 TXA。'],
+      pdlla:['warn','PDLLA 的作用機轉依賴<b>受控的異物／發炎反應</b>；酒糟本身為發炎性疾病，結節與泛紅風險理論上升。要用先試打。'],
+      lido:['warn','敷麻封閉 30 分鐘本身即可誘發潮紅 —— 改冰敷或縮短敷麻，而非提高配方內濃度。'],
+      txa:['ok','抑制 plasmin → 降低 PAR-2 活化與 VEGF；皮內 TXA 治療酒糟紅斑有文獻支持。'],
+      btx:['ok','抑制血管舒張性神經傳導與肥大細胞去顆粒，對紅斑型潮紅證據佳。']
+    },
+    proto:{
+      '穩定期門檻':'丘疹膿皰 ≥ 4 週無新發；紅斑穩定非潮紅波段；<b>單擦保濕劑不刺痛</b>（最具鑑別力）。',
+      '術前':'維持治療（metronidazole／ivermectin／azelaic acid）不停；停外用 A 酸／酸類 5–7 天；<b>試打單側顴骨 0.2 cc，觀察 2 週</b>。',
+      '操作':'水光槍低壓、減少 pass 數或手動 32G；滲透壓 ≤ 350；療程間隔拉長至 4–6 週。',
+      '術後':'修復型乳霜；5–7 天不用酸類；嚴格防曬。24–72 小時暫時泛紅屬預期，須事前告知。',
+      '紅旗':'<span class="red">蒼白、網狀紅斑、與外觀不成比例的劇痛、擴大的暗紫色斑 → 血管栓塞，立即處理。</span>'
+    }},
+  sebd:{ name:'脂漏', maxOsm:400,
+    rules:{
+      vitc:['danger','酸性刺激，屏障已缺損者不建議。移除。'],
+      zn:['warn','雖有抗 Malassezia 的理論根據，但皮內刺激性弊大於利 —— <b>改走外用</b>。'],
+      plt:['warn','血小板含 <b>IGF-1</b>，可能刺激皮脂腺 → 增加 Malassezia 基質。非禁忌但方向不利。'],
+      pdlla:['warn','資料不足。穩定期可考慮，但先試打並延長觀察。'],
+      btx:['ok','減少皮脂分泌，在出油型脂漏方向正確。']
+    },
+    proto:{
+      '穩定期門檻':'施打區 ≥ 2–4 週無脫屑、無紅斑；維持性抗黴菌治療中且穩定。',
+      '術前':'<b>術前 1–2 週先用 ketoconazole 2% 做區域減菌</b>；消毒確實（眼周避開 chlorhexidine）。',
+      '術後':'<b class="red">清爽、非封閉、不含脂質的保濕（甘油／HA 基底）。</b>凡士林、植物油、脂肪酸酯會餵養 Malassezia 並形成封閉環境。',
+      '紅旗':'術後 1–2 週出現<b>單一形態、大小一致的毛囊性丘疹膿皰且癢</b>（非痛）→ <b>Malassezia 毛囊炎</b>，用口服 itraconazole 或外用抗黴菌，<span class="red">不是抗生素</span>。'
+    }},
+  ad:{ name:'異位性皮膚炎', maxOsm:350, minimal:true,
+    rules:{
+      vitc:['danger','刺激性強，移除。'],
+      zn:['danger','刺激性強，移除。'],
+      lido:['warn','AD 接觸過敏盛行率高，皮內注射完全繞過屏障 → 致敏風險上升。改冰敷／表麻，不放進配方。'],
+      txa:['warn','非必要不加 —— AD 的原則是成分越少越好。有明確色沉主訴才加，且一次只加一樣。'],
+      pdlla:['warn','植入性材料 ＋ 高帶菌率，且結節不可逆。寧可先用 HA ＋ saline 這類簡單配方。'],
+      plt:['ok','自體成分，無致敏路徑，是免疫學上最乾淨的添加物。<b>但不降低感染風險</b>。'],
+      ha:['ok','改善屏障、降低 TEWL —— 對應 AD 核心病理，主訴乾燥者這一味就夠。']
+    },
+    proto:{
+      '穩定期門檻':'<b>全臉與全身</b>皆無活動性病灶 ≥ 4–8 週（他處病灶是帶菌儲存庫）。',
+      '核心風險':'S. aureus 帶菌率高 ＋ Th2 抑制抗菌胜肽 → <b>菌多且防禦弱</b>，感染風險本質高於酒糟與脂漏。',
+      '術前':'<b>HSV 病史者給 valacyclovir 預防</b>；主動維持治療不停；<b>試打觀察 2 週不可省</b>。',
+      '術後':'<b>厚重、封閉、含油的潤膚劑</b>，術後立即恢復大量使用 —— 與脂漏原則相反。',
+      '紅旗':'<span class="red">成簇水疱、鑿孔狀糜爛、發燒 → 疱疹性濕疹，急症。</span>蜜黃色結痂 → 續發性膿痂疹。'
+    }}
 };
 
 let rows = [], uid = 0;
 
-/* ---------- 列操作 ---------- */
+function tab(i, btn){
+  document.querySelectorAll('.panel').forEach((p,j)=>p.classList.toggle('on', j===i));
+  document.querySelectorAll('.tabnav button').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  window.scrollTo({top:0, behavior:'smooth'});
+}
+
 function addRow(key, vol){
   const L = LIB[key];
   rows.push({id:++uid, key, name:L.name, desc:L.desc, osm:L.osm,
@@ -243,7 +670,7 @@ function addCustom(){
   render();
 }
 function addFromSel(){ addRow(document.getElementById('addsel').value, 0); render(); }
-function removeRow(id){ rows = rows.filter(r=>r.id!==id); render(); }
+function removeRow(id){ rows = rows.filter(x=>x.id!==id); render(); }
 function clearAll(){ rows = []; render(); }
 function loadPreset(p){ rows = []; PRESETS[p].forEach(x=>addRow(x[0], x[1])); render(); }
 
@@ -253,170 +680,183 @@ function upd(id, field, val, ai){
   if(field==='vol') r.vol = isNaN(n)?0:Math.max(0,n);
   else if(field==='osm') r.osm = isNaN(n)?0:Math.max(0,n);
   else if(field==='conc') r.act[ai].c = isNaN(n)?0:Math.max(0,n);
-  else if(field==='name'){ r.name = val; }
-  else if(field==='clabel'){ AM[r.act[0].k].label = val || '自訂'; }
-  calc();
-}
-
-/* ---------- 繪製 ---------- */
-function render(){
-  const tb = document.getElementById('tbody');
-  tb.innerHTML = rows.map(r=>{
-    let concCell;
-    if(r.custom){
-      concCell = '<div style="display:flex;gap:5px;align-items:center">'
-        + '<input style="flex:1 1 90px" value="'+esc(AM[r.act[0].k].label)+'" oninput="upd('+r.id+',\'clabel\',this.value)">'
-        + '<input class="v" type="number" step="any" value="'+r.act[0].c+'" oninput="upd('+r.id+',\'conc\',this.value,0)">'
-        + '<span style="font-size:11.5px;color:var(--muted);white-space:nowrap">mg/mL</span></div>';
-    } else if(r.act.length===0){
-      concCell = '<span style="color:var(--muted);font-size:12.5px">'+esc(r.desc)+'（無活性成分）</span>';
-    } else {
-      concCell = r.act.map((a,i)=>'<span style="display:inline-flex;gap:4px;align-items:center;margin-right:8px;white-space:nowrap">'
-        + '<span style="font-size:12px;color:var(--muted)">'+esc(AM[a.k].label.split('（')[0])+'</span>'
-        + '<input class="v" style="width:62px" type="number" step="any" value="'+a.c+'" oninput="upd('+r.id+',\'conc\',this.value,'+i+')">'
-        + '</span>').join('');
-    }
-    const nameCell = r.custom
-      ? '<input value="'+esc(r.name)+'" oninput="upd('+r.id+',\'name\',this.value)">'
-      : '<b>'+esc(r.name)+'</b>';
-    return '<tr>'
-      + '<td>'+nameCell+'</td>'
-      + '<td>'+concCell+'</td>'
-      + '<td class="num"><input class="s" type="number" step="any" value="'+r.osm+'" oninput="upd('+r.id+',\'osm\',this.value)"></td>'
-      + '<td class="num"><input class="v" type="number" step="0.05" min="0" value="'+r.vol+'" oninput="upd('+r.id+',\'vol\',this.value)"></td>'
-      + '<td class="num" id="pct'+r.id+'">—</td>'
-      + '<td class="noprint"><button class="rm" title="移除" onclick="removeRow('+r.id+')">×</button></td>'
-      + '</tr>';
-  }).join('') || '<tr><td colspan="6" style="color:var(--muted);padding:18px 8px">尚未加入成分 —— 點上方按鈕載入預設配方，或自行加入。</td></tr>';
+  else if(field==='name') r.name = val;
+  else if(field==='clabel') AM[r.act[0].k].label = val || '自訂';
   calc();
 }
 
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/"/g,'&quot;'); }
-function fmt(n,d){ if(!isFinite(n)) return '—'; return n.toFixed(d==null?2:d).replace(/\.?0+$/,'') || '0'; }
+function fmt(n,d){ if(!isFinite(n)) return '—'; const s=n.toFixed(d==null?2:d); return s.indexOf('.')>=0 ? s.replace(/\.?0+$/,'') : s; }
 
-/* ---------- 計算 ---------- */
-function calc(){
-  const tot = rows.reduce((s,r)=>s+r.vol,0);
-  rows.forEach(r=>{
-    const el = document.getElementById('pct'+r.id);
-    if(el) el.textContent = tot>0 ? fmt(r.vol/tot*100,1)+'%' : '—';
-  });
-
-  // 總滲透壓
-  const osm = tot>0 ? rows.reduce((s,r)=>s+r.osm*r.vol,0)/tot : 0;
-
-  // 活性成分總量
-  const mg = {};
-  rows.forEach(r=>r.act.forEach(a=>{ mg[a.k] = (mg[a.k]||0) + a.c*r.vol; }));
-
-  // 統計方塊
-  document.getElementById('stats').innerHTML =
-      box('總體積', fmt(tot,2), 'cc')
-    + box('估算滲透壓', fmt(osm,0), 'mOsm/L')
-    + box('活性成分數', String(Object.keys(mg).filter(k=>mg[k]>0 && k!=='lido').length), '種')
-    + box('稀釋倍數', tot>0 && rows[0] && rows[0].vol>0 ? fmt(tot/rows[0].vol,2)+'×' : '—', '對第一列');
-
-  // 濃度表
-  const order = ['plt','btx','ha','txa','vitc','zn','lido','glyc','cys','gly'];
-  const keys = Object.keys(mg).sort((a,b)=>{
-    const ia = order.indexOf(a), ib = order.indexOf(b);
-    return (ia<0?99:ia)-(ib<0?99:ib);
-  });
-  document.getElementById('conc').innerHTML = keys.filter(k=>mg[k]>0).map(k=>{
-    const m = AM[k] || {label:k, unit:'mg/mL', info:true, range:'—'};
-    const c = tot>0 ? mg[k]/tot : 0;
-    const st = judge(k, c);
-    let extra = '';
-    if(k==='lido') extra = ' <span style="color:var(--muted);font-size:11.5px">('+fmt(c/10,2)+'%)</span>';
-    const tu = m.unit==='U/mL' ? 'U' : (m.unit==='%' ? 'cc' : 'mg');
-    const tv = m.unit==='%' ? mg[k]/100 : mg[k];
-    return '<tr><td>'+esc(m.label)+'</td><td class="num">'+fmt(tv,2)+' <span style="font-size:11.5px;color:var(--muted)">'+tu+'</span></td>'
-      + '<td class="num"><b>'+fmt(c,2)+'</b> <span style="font-size:11.5px;color:var(--muted)">'+m.unit+'</span>'+extra+'</td>'
-      + '<td style="font-size:12.5px;color:var(--muted)">'+esc(m.range)+'</td>'
-      + '<td><span class="pill '+st.cls+'">'+st.txt+'</span></td></tr>';
-  }).join('') || '<tr><td colspan="5" style="color:var(--muted);padding:14px 8px">—</td></tr>';
-
-  // 滲透壓指標
-  const pos = Math.min(osm,1000)/1000*100;
-  document.getElementById('gmark').style.left = 'calc('+pos+'% - 1.5px)';
-
-  // 訊息
-  const M = [];
-  const hasHA = (mg.ha||0)>0, hasVC = (mg.vitc||0)>0, hasBTX = (mg.btx||0)>0, hasCys = (mg.cys||0)>0;
-  if(hasHA && hasVC) M.push(['danger','<b>VC 與 HA 同管。</b>抗壞血酸會加速 HA 解聚，兩者須分管、分次注射。']);
-  if(hasBTX && (hasVC || hasCys)) M.push(['danger','<b>肉毒與還原劑同管（'
-    + [hasVC?'Vitamin C':null, hasCys?'L-Cysteine / Soragen':null].filter(Boolean).join('、')
-    + '）。</b>肉毒素輕鏈與重鏈之間靠雙硫鍵連結，還原劑可能將其切斷而使毒素失活 —— 效果會不如預期且無法預測，務必分管。']);
-  if(hasBTX){
-    const U = mg.btx;
-    if(U>100) M.push(['danger','本次肉毒總量 <b>'+fmt(U,0)+' U</b>，單次微滴注射已明顯偏高。請重新確認復溶濃度與抽取量。']);
-    else if(U>50) M.push(['warn','本次肉毒總量 '+fmt(U,0)+' U —— 若同次還有傳統除皺注射，請合併計算，單次療程總量建議 ≤ 100 U。']);
-    M.push(['info','<b>肉毒微滴：深度是安全的關鍵。</b>務必維持真皮內 1.0–1.5 mm；下臉（顴大肌、笑肌）與眼周若打太深會造成笑容不對稱或眼瞼下垂。復溶與混合時輕轉勻，勿劇烈震盪。療程間隔 ≥ 3 個月以降低中和抗體風險。']);
-  }
-  if(tot>0){
-    if(osm>600) M.push(['danger','<b>滲透壓 '+fmt(osm,0)+' mOsm/L 過高</b>（>600）。刺痛、風團持續與組織刺激風險明顯上升，請降低高張成分或增加稀釋。']);
-    else if(osm>450) M.push(['warn','滲透壓 '+fmt(osm,0)+' mOsm/L 偏高張（理想 300–450）。敏感肌建議再稀釋。']);
-    else if(osm<250) M.push(['warn','滲透壓 '+fmt(osm,0)+' mOsm/L 偏低張，可能造成細胞腫脹與注射後紅斑延長。']);
-    else M.push(['ok','滲透壓 '+fmt(osm,0)+' mOsm/L，落在理想區間。']);
-  }
-  const hasZn = (mg.zn||0)>0, hasPLT = (mg.plt||0)>0;
-  if(hasPLT){
-    const frac = tot>0 ? mg.plt/tot : 0;
-    if(hasZn) M.push(['danger','<b>鋅與血小板同管。</b>Zn²⁺ 本身是血小板活化劑，且會與 PRP 的檸檬酸抗凝劑競爭結合 —— 釋出的 Ca²⁺ 可能在<b>針筒內就啟動凝血</b>，同時生長因子提早釋放、細針阻塞。鋅務必分開。']);
-    if((mg.lido||0)>0) M.push(['warn','<b>局部麻醉劑會抑制血小板功能</b>與生長因子釋放，並降低 pH。建議改用術前表面麻醉或神經阻斷；若一定要加，控制在總量 10% 以內。']);
-    if((mg.vitc||0)>0) M.push(['warn','Vitamin C 原液為高張且偏酸，血小板在 pH < 6.5 會提早活化失能 —— 不建議與 PRP 同管。']);
-    if((mg.txa||0)>0) M.push(['ok','TXA 與 PRP 相容（抗纖溶不損害血小板），此組合在黑斑治療已有文獻報告。']);
-    if(frac<50) M.push(['warn','血小板懸浮液僅佔 '+fmt(frac,0)+'%，稀釋過度會直接抵銷 PRP 的濃縮意義。建議維持 ≥ 50%。']);
-    M.push(['info','<b>PRP 操作：</b>製備後 30 分鐘內用畢；不可混入任何含防腐劑的溶液；血小板對剪切力敏感，水光槍請用低壓設定或改手動 32G 注射。']);
-  }
-  if(hasZn){
-    const chel = [];
-    if(hasVC) chel.push('Vitamin C（碳酸氫鹽緩衝 → 碳酸鋅）');
-    if(hasCys || (mg.gly||0)>0) chel.push('Soragen（cysteine／glycine 螯合鋅）');
-    if((mg.txa||0)>0) chel.push('Transamin（pH 7–8，鋅在鹼性下沉澱為 Zn(OH)₂）');
-    if(chel.length) M.push(['warn','<b>鋅有沉澱／螯合風險：</b>'+chel.join('、')+'。<b>混合後必須目視檢查</b> —— 出現任何混濁、絮狀或結晶即整管丟棄，不可注射。']);
-    if(hasHA) M.push(['warn','<b>鋅（二價陽離子）與 HA（聚陰離子）會產生交互作用</b>，可能改變凝膠黏度或造成聚集。首次混合請先小量試混觀察 10 分鐘。']);
-    if(hasBTX) M.push(['info','鋅作為肉毒素金屬蛋白酶的輔因子 —— 但有效性證據來自<b>口服補充</b>（術前 4 天鋅 50 mg + phytase），<b>同管注射並無實證支持</b>，且徒增沉澱風險。建議走口服途徑。']);
-    M.push(['info','皮內鋅的臨床文獻很少，建議元素鋅最終濃度 ≤ 0.5 mg/mL 起步。鋅鹽本身有收斂／刺激性，濃度過高可能造成發炎結節與 PIH。']);
-  }
-  const nAct = Object.keys(mg).filter(k=>mg[k]>0 && k!=='lido' && k!=='gly').length;
-  if(nAct>4) M.push(['warn','活性成分達 '+nAct+' 種。成分越多，pH 與滲透壓越難預測，不良反應也越難歸因 —— 建議控制在 4 種以內。']);
-  if(tot>6) M.push(['warn','總體積 '+fmt(tot,2)+' cc，超過全臉常用量（2.5–5 cc）。']);
-  if(hasVC) M.push(['info','含 Vitamin C：混合後須<b>避光、30 分鐘內用畢</b>；溶液轉黃即已氧化，必須丟棄。並確認仿單是否含 metabisulfite。']);
-  if(hasHA) M.push(['info','含交聯 HA：注射深度控制在真皮淺中層 1.0–1.5 mm，過淺易形成丘疹或結節。']);
-  if(tot===0) M.length = 0, M.push(['info','請先填入抽取量。']);
-  document.getElementById('msgs').innerHTML = M.map(m=>'<div class="msg '+m[0]+'">'+m[1]+'</div>').join('');
-
-  // Lidocaine 總量
-  const wt = parseFloat(document.getElementById('wt').value)||55;
-  const maxMg = 4.5*wt, used = mg.lido||0, pctUsed = maxMg>0 ? used/maxMg*100 : 0;
-  let cls = pctUsed>100?'danger':(pctUsed>50?'warn':'ok');
-  document.getElementById('lidosum').innerHTML =
-      '<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>本次 Lidocaine 總量</span><b>'+fmt(used,1)+' mg</b></div>'
-    + '<div style="display:flex;justify-content:space-between;margin-bottom:4px"><span>安全上限（4.5 mg/kg，不含 epi）</span><b>'+fmt(maxMg,0)+' mg</b></div>'
-    + '<div style="display:flex;justify-content:space-between;align-items:center"><span>使用比例</span><span class="pill '+cls+'">'+fmt(pctUsed,1)+'%</span></div>'
-    + '<p class="hint" style="margin-top:8px">配方中的 lidocaine 濃度通常不足以單獨止痛，仍須術前表面麻醉 20–30 分鐘。務必使用 <b>plain、preservative-free</b> 製劑 —— 含腎上腺素者 pH 3.3–5.5，不適合皮內大面積注射。</p>';
-}
-
-function box(k,v,u){
-  return '<div class="b"><div class="k">'+k+'</div><div class="v">'+v+' <span class="u">'+u+'</span></div></div>';
+function render(){
+  document.getElementById('tbody').innerHTML = rows.map(r=>{
+    let cc;
+    if(r.custom){
+      cc = '<div style="display:flex;gap:5px;align-items:center">'
+        + '<input style="flex:1 1 80px" value="'+esc(AM[r.act[0].k].label)+'" oninput="upd('+r.id+',\'clabel\',this.value)">'
+        + '<input class="v" type="number" step="any" value="'+r.act[0].c+'" oninput="upd('+r.id+',\'conc\',this.value,0)">'
+        + '<span style="font-size:11px;color:var(--muted)">mg/mL</span></div>';
+    } else if(r.act.length===0){
+      cc = '<span style="color:var(--muted);font-size:12.5px">'+esc(r.desc)+'</span>';
+    } else {
+      cc = r.act.map((a,i)=>'<span style="display:inline-flex;gap:4px;align-items:center;margin-right:8px;white-space:nowrap">'
+        + '<span style="font-size:11.5px;color:var(--muted)">'+esc(AM[a.k].label.split('（')[0])+'</span>'
+        + '<input class="v" style="width:58px" type="number" step="any" value="'+a.c+'" oninput="upd('+r.id+',\'conc\',this.value,'+i+')"></span>').join('');
+    }
+    const nc = r.custom ? '<input value="'+esc(r.name)+'" oninput="upd('+r.id+',\'name\',this.value)">' : '<b>'+esc(r.name)+'</b>';
+    return '<tr><td>'+nc+'</td><td>'+cc+'</td>'
+      + '<td class="num"><input class="s" type="number" step="any" value="'+r.osm+'" oninput="upd('+r.id+',\'osm\',this.value)"></td>'
+      + '<td class="num"><input class="v" type="number" step="0.05" min="0" value="'+r.vol+'" oninput="upd('+r.id+',\'vol\',this.value)"></td>'
+      + '<td class="num" id="pct'+r.id+'">—</td>'
+      + '<td class="noprint"><button class="rm" onclick="removeRow('+r.id+')">×</button></td></tr>';
+  }).join('') || '<tr><td colspan="6" style="color:var(--muted);padding:18px 8px">尚未加入成分 —— 點上方按鈕載入預設配方。</td></tr>';
+  calc();
 }
 
 function judge(k,c){
   const m = AM[k];
   if(!m || m.info) return {cls:'info', txt:'參考'};
-  const [lo,hi] = m.ok, [alo,ahi] = m.amber||[null,null];
+  const lo=m.ok[0], hi=m.ok[1], alo=m.amber?m.amber[0]:null, ahi=m.amber?m.amber[1]:null;
   const okLo = lo==null || c>=lo, okHi = hi==null || c<=hi;
   if(okLo && okHi) return {cls:'ok', txt:'安全區間'};
   const amLo = alo==null || c>=alo, amHi = ahi==null || c<=ahi;
-  if(amLo && amHi) return {cls:'warn', txt: (!okLo?'偏低':'偏高')};
-  return {cls:'danger', txt: (!amLo?'過低':'過高')};
+  if(amLo && amHi) return {cls:'warn', txt:(!okLo?'偏低':'偏高')};
+  return {cls:'danger', txt:(!amLo?'過低':'過高')};
+}
+function box(k,v,u){ return '<div class="b"><div class="k">'+k+'</div><div class="v">'+v+' <span class="u">'+u+'</span></div></div>'; }
+
+function calc(){
+  const tot = rows.reduce((s,r)=>s+r.vol,0);
+  rows.forEach(r=>{ const e=document.getElementById('pct'+r.id); if(e) e.textContent = tot>0?fmt(r.vol/tot*100,1)+'%':'—'; });
+  const osm = tot>0 ? rows.reduce((s,r)=>s+r.osm*r.vol,0)/tot : 0;
+  const mg = {};
+  rows.forEach(r=>r.act.forEach(a=>{ mg[a.k]=(mg[a.k]||0)+a.c*r.vol; }));
+
+  document.getElementById('stats').innerHTML =
+      box('總體積', fmt(tot,2), 'cc')
+    + box('估算滲透壓', fmt(osm,0), 'mOsm/L')
+    + box('活性成分數', String(Object.keys(mg).filter(k=>mg[k]>0 && k!=='lido').length), '種');
+
+  const order = ['plt','pdlla','btx','ha','hanx','txa','vitc','zn','lido','glyc','cys','gly'];
+  const keys = Object.keys(mg).filter(k=>mg[k]>0).sort((a,b)=>{
+    const ia=order.indexOf(a), ib=order.indexOf(b); return (ia<0?99:ia)-(ib<0?99:ib);
+  });
+  document.getElementById('conc').innerHTML = keys.map(k=>{
+    const m = AM[k] || {label:k, unit:'mg/mL', info:true, range:'—'};
+    const c = tot>0 ? mg[k]/tot : 0, st = judge(k,c);
+    const tu = m.unit==='U/mL'?'U':(m.unit==='%'?'cc':'mg');
+    const tv = m.unit==='%'? mg[k]/100 : mg[k];
+    const ex = k==='lido' ? ' <span style="color:var(--muted);font-size:11px">('+fmt(c/10,2)+'%)</span>' : '';
+    return '<tr><td>'+esc(m.label)+'</td><td class="num">'+fmt(tv,2)+' <span style="font-size:11px;color:var(--muted)">'+tu+'</span></td>'
+      + '<td class="num"><b>'+fmt(c,2)+'</b> <span style="font-size:11px;color:var(--muted)">'+m.unit+'</span>'+ex+'</td>'
+      + '<td style="font-size:12.5px;color:var(--muted)">'+esc(m.range)+'</td>'
+      + '<td><span class="pill '+st.cls+'">'+st.txt+'</span></td></tr>';
+  }).join('') || '<tr><td colspan="5" style="color:var(--muted);padding:14px 8px">—</td></tr>';
+
+  document.getElementById('gmark').style.left = 'calc('+(Math.min(osm,1000)/1000*100)+'% - 1.5px)';
+
+  /* ---- 通用檢核 ---- */
+  const M = [];
+  const hasHA=(mg.ha||0)>0, hasVC=(mg.vitc||0)>0, hasBTX=(mg.btx||0)>0,
+        hasCys=(mg.cys||0)>0, hasZn=(mg.zn||0)>0, hasPLT=(mg.plt||0)>0, hasPD=(mg.pdlla||0)>0;
+
+  if(hasHA && hasVC) M.push(['danger','<b>VC 與交聯 HA 同管。</b>抗壞血酸加速 HA 解聚，須分管、分次注射。']);
+  if(hasBTX && (hasVC||hasCys)) M.push(['danger','<b>肉毒與還原劑同管（'
+    +[hasVC?'Vitamin C':null, hasCys?'L-Cysteine／Soragen':null].filter(Boolean).join('、')
+    +'）。</b>肉毒素輕鏈與重鏈間靠雙硫鍵連結，還原劑可能切斷而使毒素失活 —— 效果不可預測，務必分管。']);
+
+  if(hasPD){
+    if(hasHA) M.push(['warn','<b>PDLLA 與交聯 HA 同管。</b>微球懸浮於黏稠凝膠中分散不均、易聚集 —— 正是結節成因。且日後結節<b>玻尿酸酶只溶 HA、溶不掉 PDLLA</b>。建議分管兩道施打。']);
+    if(hasVC) M.push(['warn','<b>PDLLA 與 VC 同管。</b>低 pH 加速聚乳酸酯鍵水解，且刺激性不利於依賴受控發炎反應的生物刺激劑。']);
+    if(hasPLT||hasZn) M.push(['warn','<b>PDLLA 與 '+(hasPLT?'PRP':'鋅')+' 同管無資料。</b>兩者皆誘發組織反應，結節風險是否相加未知 —— 先小量試混並延長觀察。']);
+    M.push(['info','<b>PDLLA 操作：</b>復溶後靜置至完全分散無可見顆粒；<b>輕轉勿劇烈震盪</b>（破壞微球）；含電解質成分（TXA、lidocaine）施打前才加。均勻鋪點勿單點堆量，術後按摩分散微球。<b>結節不可逆，玻尿酸酶無效</b> —— 同意書須單獨載明。']);
+  }
+  if(hasZn){
+    const chel=[];
+    if(hasVC) chel.push('Vitamin C（碳酸氫鹽緩衝 → 碳酸鋅）');
+    if(hasCys||(mg.gly||0)>0) chel.push('Soragen（cysteine／glycine 螯合鋅）');
+    if((mg.txa||0)>0) chel.push('Transamin（pH 7–8 → Zn(OH)₂ 沉澱）');
+    if(chel.length) M.push(['warn','<b>鋅有沉澱／螯合風險：</b>'+chel.join('、')+'。<b>混合後必須目視檢查</b> —— 出現混濁、絮狀或結晶即整管丟棄。']);
+    if(hasHA) M.push(['warn','<b>鋅（二價陽離子）與 HA（聚陰離子）</b>可能改變凝膠黏度或造成聚集。首次混合先小量試混觀察 10 分鐘。']);
+    if(hasBTX) M.push(['info','鋅為肉毒素金屬蛋白酶的輔因子，但證據來自<b>口服補充</b>（術前 4 天鋅 50 mg ＋ phytase），<b>同管注射無實證</b>。建議走口服。']);
+    M.push(['info','皮內鋅文獻極少，元素鋅建議 ≤ 0.5 mg/mL 起步；鋅鹽本身有收斂刺激性。']);
+  }
+  if(hasPLT){
+    const frac = tot>0 ? mg.plt/tot : 0;
+    if(hasZn) M.push(['danger','<b>鋅與血小板同管。</b>Zn²⁺ 是血小板活化劑，且與檸檬酸抗凝劑競爭結合 → 釋出 Ca²⁺ 可能在<b>針筒內啟動凝血</b>。務必分開。']);
+    if((mg.lido||0)>0) M.push(['warn','<b>局部麻醉劑會抑制血小板功能</b>與生長因子釋放並降低 pH。建議改表麻／神經阻斷；必要時控制在總量 10% 以內。']);
+    if(hasVC) M.push(['warn','VC 原液高張且偏酸，血小板在 pH &lt; 6.5 提早活化失能 —— 不建議與 PRP 同管。']);
+    if((mg.txa||0)>0) M.push(['ok','TXA 與 PRP 相容（抗纖溶不損害血小板），此組合在黑斑治療已有文獻報告。']);
+    if(frac<50) M.push(['warn','血小板僅佔 '+fmt(frac,0)+'%，稀釋過度會抵銷離心濃縮的意義。建議 ≥ 50%。']);
+    M.push(['info','<b>PRP 操作：</b>製備後 30 分鐘內用畢；不可混入含防腐劑的溶液；水光槍低壓或手動 32G。']);
+  }
+  if(hasBTX){
+    const U = mg.btx;
+    if(U>100) M.push(['danger','肉毒總量 <b>'+fmt(U,0)+' U</b>，單次微滴注射明顯偏高，請確認復溶濃度與抽取量。']);
+    else if(U>50) M.push(['warn','肉毒總量 '+fmt(U,0)+' U —— 若同次還有傳統除皺注射請合併計算，單次建議 ≤ 100 U。']);
+    M.push(['info','<b>肉毒微滴：深度是安全關鍵。</b>維持真皮內 1.0–1.5 mm；下臉與眼周過深會造成笑容不對稱或眼瞼下垂。療程間隔 ≥ 3 個月。']);
+  }
+  if(tot>0){
+    if(osm>600) M.push(['danger','<b>滲透壓 '+fmt(osm,0)+' mOsm/L 過高</b>（>600）。刺痛、風團持續與組織刺激風險明顯上升。']);
+    else if(osm>450) M.push(['warn','滲透壓 '+fmt(osm,0)+' mOsm/L 偏高張（理想 300–450）。敏感肌建議再稀釋。']);
+    else if(osm<250){
+      if(hasPD) M.push(['info','滲透壓 '+fmt(osm,0)+' mOsm/L —— PDLLA 以蒸餾水為載體時<b>低張屬預期</b>，非配製錯誤。加入 lidocaine／TXA 會略微提升；注射時刺痛較明顯屬正常。']);
+      else M.push(['warn','滲透壓 '+fmt(osm,0)+' mOsm/L 偏低張，可能造成細胞腫脹與注射後紅斑延長。']);
+    }
+    else M.push(['ok','滲透壓 '+fmt(osm,0)+' mOsm/L，落在理想區間。']);
+  }
+  const nAct = Object.keys(mg).filter(k=>mg[k]>0 && k!=='lido' && k!=='gly').length;
+  if(nAct>4) M.push(['warn','活性成分達 '+nAct+' 種。成分越多 pH 與滲透壓越難預測，不良反應也越難歸因 —— 建議 4 種以內。']);
+  if(tot>6) M.push(['warn','總體積 '+fmt(tot,2)+' cc，超過全臉常用量（2.5–5 cc）。']);
+  if(hasVC) M.push(['info','含 Vitamin C：混合後<b>避光、30 分鐘內用畢</b>；溶液轉黃即已氧化必須丟棄。確認仿單是否含 metabisulfite。']);
+  if(hasHA) M.push(['info','含交聯 HA：注射深度 1.0–1.5 mm，過淺易形成丘疹或結節。']);
+  if(tot===0){ M.length=0; M.push(['info','請先填入抽取量。']); }
+
+  /* ---- 膚況檢核 ---- */
+  const conds = Array.from(document.querySelectorAll('.cond:checked')).map(c=>c.value);
+  const CM = [];
+  conds.forEach(ck=>{
+    const C = COND[ck];
+    Object.keys(C.rules).forEach(ing=>{
+      if((mg[ing]||0)>0){
+        const lv=C.rules[ing][0], txt=C.rules[ing][1];
+        CM.push([lv,'<b>['+C.name+'] '+(AM[ing]?AM[ing].label.split('（')[0]:ing)+'：</b>'+txt]);
+      }
+    });
+    if(tot>0 && osm>C.maxOsm) CM.push(['warn','<b>['+C.name+']</b> 滲透壓 '+fmt(osm,0)+' 超過此族群建議上限 '+C.maxOsm+'。屏障受損者對高張刺激更敏感。']);
+    if(C.minimal){
+      const n = Object.keys(mg).filter(k=>mg[k]>0 && ['lido','gly','cys','glyc','hanx'].indexOf(k)<0).length;
+      if(n>2) CM.push(['warn','<b>['+C.name+']</b> 活性成分 '+n+' 種。皮內注射繞過屏障，成分越多致敏機會越高 —— 建議 2 種以內。']);
+    }
+  });
+  const rank = {danger:0, warn:1, ok:2, info:3};
+  CM.sort((a,b)=>rank[a[0]]-rank[b[0]]);
+  document.getElementById('msgs').innerHTML =
+    CM.concat(M).map(m=>'<div class="msg '+m[0]+'">'+m[1]+'</div>').join('');
+
+  let panel = conds.map(ck=>{
+    const C = COND[ck];
+    return '<div class="pcard"><h4>'+C.name+'</h4><dl>'
+      + Object.keys(C.proto).map(k=>'<dt>'+k+'</dt><dd>'+C.proto[k]+'</dd>').join('') + '</dl></div>';
+  }).join('');
+  if(conds.indexOf('sebd')>=0 && conds.indexOf('ad')>=0)
+    panel += '<div class="msg warn"><b>術後護理原則衝突：</b>脂漏要清爽非封閉、AD 要厚重封閉。<b>分區處理</b> —— 兩頰按 AD、T 字與眉間鼻翼按脂漏。</div>';
+  document.getElementById('condpanel').innerHTML = panel;
+
+  const wt = parseFloat(document.getElementById('wt').value)||55;
+  const maxMg = 4.5*wt, used = mg.lido||0, pct = maxMg>0?used/maxMg*100:0;
+  const cls = pct>100?'danger':(pct>50?'warn':'ok');
+  document.getElementById('lidosum').innerHTML =
+      '<div style="display:flex;justify-content:space-between"><span>本次 Lidocaine 總量</span><b>'+fmt(used,1)+' mg</b></div>'
+    + '<div style="display:flex;justify-content:space-between"><span>安全上限（4.5 mg/kg）</span><b>'+fmt(maxMg,0)+' mg</b></div>'
+    + '<div style="display:flex;justify-content:space-between;align-items:center"><span>使用比例</span><span class="pill '+cls+'">'+fmt(pct,1)+'%</span></div>'
+    + '<p class="hint" style="margin-top:8px">配方中的 lidocaine 通常不足以單獨止痛，仍須術前表面麻醉 20–30 分鐘。務必使用 <b>plain、preservative-free</b> 製劑 —— 含腎上腺素者 pH 3.3–5.5，不適合皮內大面積注射。</p>';
 }
 
-/* ---------- 初始化 ---------- */
 document.getElementById('addsel').innerHTML =
   Object.keys(LIB).map(k=>'<option value="'+k+'">'+LIB[k].name+'　'+LIB[k].desc+'</option>').join('');
-loadPreset('B');
+loadPreset('A');
 </script>
+</div>
 </body>
 </html>
